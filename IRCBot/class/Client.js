@@ -14,17 +14,21 @@ class IRCClient extends Client {
 
     start() {
         return new Promise((resolve, reject) => {
+            const timeOutMsg = setTimeout(() => {
+                this.log("Trying to connect . . . ")
+            }, 10000)
             this.on("connected", () => {
+                clearTimeout(timeOutMsg)
                 this.log("Client connected")
                 resolve()
             })
 
-            this.on("reconnecting", () => {
-                this.log("Client reconnecting")
+            this.on("close", () => {
+                clearTimeout(timeOutMsg)
+                this.log(`Can't connect to ${process.env.IRC_HOST}:${process.env.IRC_PORT}`)
             })
 
             try {
-                this.log("Trying to connect")
                 this.connect({
                     host: process.env.IRC_HOST,
                     port: process.env.IRC_PORT,
