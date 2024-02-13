@@ -1,13 +1,19 @@
 const { Client } = require("irc-framework");
 
 class IRCClient extends Client {
-    constructor(bridge, verbose = false) {
+    constructor(bridge, verbose = false, channels) {
         super()
         this.bridge = bridge
+        this.channels = channels
         this.verbose = verbose
-        this.on("message", (msg) => this.bridge.emit("message", msg))
+        this.on("message", (msg) => {
+            // this.log(msg)
+            if (!channels.includes(msg.target) && !channels.includes(msg.channel) && msg.nick != this.user.nick) return
+            // this.log("Message is okay")
+            this.bridge.emit("message", msg, {type: "irc", name: msg.target})
+        })
     }
-
+nick
     log(...args) {
         if (this.verbose) console.log("[IRC]", ...args)
     }
@@ -20,7 +26,34 @@ class IRCClient extends Client {
             this.on("connected", () => {
                 clearTimeout(timeOutMsg)
                 this.log("Client connected")
+                for (const channel of this.channels) {
+                    this.join(channel)
+                }
                 resolve()
+            })
+
+            this.on("join", (channel) => {
+                this.log(`Joined ${channel.channel}`)
+            })
+
+            this.on("socket close", () => {
+                clearTimeout(timeOutMsg)
+                this.log("Socket closed")
+            })
+
+            this.on("socket error", (error) => {
+                clearTimeout(timeOutMsg)
+                this.log("Socket error: ", error)
+            })
+
+            this.on("irc error", (error) => {
+                clearTimeout(timeOutMsg)
+                this.log("IRC error: ", error)
+            })
+
+            this.on("error", (error) => {
+                clearTimeout(timeOutMsg)
+                this.log("Error: ", error)
             })
 
             this.on("close", () => {
@@ -34,6 +67,7 @@ class IRCClient extends Client {
                     port: process.env.IRC_PORT,
                     nick: process.env.NICKNAME,
                     username: process.env.NICKNAME,
+                    tls: true
                 })
             } catch (error) {
                 reject(error)

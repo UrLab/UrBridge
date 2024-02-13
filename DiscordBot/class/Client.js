@@ -1,7 +1,7 @@
 const { Client } = require("discord.js");
 
 class DiscordClient extends Client {
-    constructor(bridge, verbose = false) {
+    constructor(bridge, verbose = false, channels) {
         super({
             intents: [
                 "Guilds",
@@ -14,7 +14,12 @@ class DiscordClient extends Client {
         })
         this.bridge = bridge
         this.verbose = verbose
-        this.on("message", (msg) => this.bridge.emit("message", msg))
+        this.on("messageCreate", (msg) => {
+            // this.log(msg)
+            if (!channels.includes(msg.channel.id) || msg.author.id == this.user.id) return
+            // this.log("Message is ok")
+            this.bridge.emit("message", msg, {type: "discord", id: msg.channel.id})
+        })
     }
 
     log(...args) {
