@@ -47,7 +47,7 @@ class Bridge extends EventEmitter {
         this.log("IRC Channels", this.config)
         for (const ichan of this.config.ircChannels) {
             this.log("ICHAN BROADCAST", ichan, msg, excludechan)
-            if (!(excludechan.type == "irc" && msg.target == excludechan.name)) {
+            if (!(excludechan.type == "irc" && ichan == excludechan.name)) {
 
                 this.log("verif chan", this.ircClient.channels.includes(ichan))
                 if (this.ircClient.channels.includes(ichan)) {
