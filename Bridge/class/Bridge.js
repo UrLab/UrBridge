@@ -7,7 +7,7 @@ class Bridge extends EventEmitter {
         super()
         const verbose = (config.verbose ?? false)
         const discordChannels = config.discordChannels
-        const ircChannels = config.ircChannels
+        const ircChannels = config.ircChannels.map(chan => chan.toLowerCase())
         if (!discordChannels || !ircChannels) {
             this.log("Missing channels");
             throw new Error("Missing discordChannels or ircChannels")
@@ -17,7 +17,7 @@ class Bridge extends EventEmitter {
         this.ircClient = new IRCClient(this, verbose, ircChannels)
 
         this.on("message", (msg, channel) => {
-            this.log("NEW MESSAGE !")
+            this.log("NEW MESSAGE !", channel)
             this.messageListener(msg, channel)
         })
     }
@@ -45,7 +45,7 @@ class Bridge extends EventEmitter {
         }
 
         this.log("IRC Channels", this.config)
-        for (const ichan of this.config.ircChannels) {
+        for (const ichan of this.ircClient.channels) {
             this.log("ICHAN BROADCAST", ichan, msg, excludechan)
             if (!(excludechan.type == "irc" && ichan == excludechan.name)) {
 

@@ -15,7 +15,7 @@ docker build -t urbridge:latest .
 run un container temporaire (pour l'instant le bot ne sauve aucune data, donc il n'y a pas d'inconvénient à le recréer à chaque démarrage et delete quand il est arêté):
 
 ```bash
-docker run -t urlab_viaduk --rm --env-file .env urbridge:latest
+docker run --name urlab_viaduk --rm --env-file .env urbridge:latest
 ```
 
 il faut un fichier .env spécifiant les variables suivantes: 
