@@ -1,4 +1,5 @@
 const { Client } = require("irc-framework");
+const { Message } = require("../../Bridge/class/Message");
 
 class IRCClient extends Client {
   constructor(bridge, verbose = false, channels) {
@@ -8,21 +9,44 @@ class IRCClient extends Client {
     this.verbose = verbose;
 
     this.on("message", (msg) => {
-      if (!msg.target) {
-        return;
-      }
+      //this.log("message recived", msg);
+
+      if (msg.from_server) return;
+      if (!msg.target) return;
+
       msg.target = msg.target.toLowerCase();
-      if (!channels.includes(msg.target) && msg.nick != this.user.nick) {
+
+      // catch self messages
+      if (msg.nick == this.user.nick) {
         return;
       }
 
       this.log("Message is okay");
-      this.bridge.emit("message", msg, { type: "irc", name: msg.target });
+
+      const internal_msg = new Message();
+      internal_msg.fromIRCFormat(msg);
+      this.bridge.broadcast(internal_msg);
     });
   }
-  nick;
+
   log(...args) {
     if (this.verbose) console.log("[IRC]", ...args);
+  }
+
+  broadcast(msg) {
+    for (const chan of this.channels) {
+      if (chan != msg.channel) { // do not send in the channel the message
+        try {
+          this.sendTextInChannel(msg.text, chan);
+        } catch (error) {
+          this.log("when tryin to send message in ", chan, " got ", error);
+        }
+      }
+    }
+  }
+
+  sendTextInChannel(text, chan) {
+    this.channel(chan).say(text);
   }
 
   start() {
