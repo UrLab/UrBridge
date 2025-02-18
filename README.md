@@ -24,3 +24,31 @@ il faut un fichier .env spécifiant les variables suivantes:
 - IRC_HOST, l'adresse du serveur irc
 - IRC_PORT, le port
 - NICKNAME, le nom du bridge sur irc
+
+### sur le vps
+
+pour déployer sur le vps, on utilise podman à la place de docker
+
+il faut donc remplacer docker par podman pour build l'image
+
+le lancement est chelou, pour l'instant on le fait en passant par un service systemd:
+
+d'abord créer le container
+```bash
+podman create --name urlab_viaduk --rm --env-file .env urbridge:latest
+```
+
+puis créer le service:
+
+```bash
+generate systemd --name urlab_viaduk > /etc/systemd/system/urlab_viaduk.service
+systemctl start urlab_viaduk
+```
+
+il faut potentiellement stop le service précédent et le reload une fois recréé
+
+
+### to do
+
+- diférencier le format entre irc et discord (pour avoir le gras dans le nom coté discord)
+- ajouter les /command du lechebot pour avoir l'auto completion de discord
