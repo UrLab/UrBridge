@@ -37,14 +37,8 @@ class Bridge {
     this.log("Broadcasting", msg);
 
     for (const client of this.clients) {
-      client.broadcast(this.fromatMessageForForward(msg));
+      client.broadcast(msg);
     }
-  }
-
-  fromatMessageForForward(msg) {
-    const res_msg = { ...msg };
-    res_msg.text = "<" + msg.author + ">: " + msg.text;
-    return res_msg;
   }
 
   log(...args) {

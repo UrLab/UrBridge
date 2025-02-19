@@ -21,7 +21,7 @@ class IRCClient extends Client {
 
       const internal_msg = new Message();
       internal_msg.fromIRCFormat(msg);
-      
+
       this.bridge.broadcast(internal_msg);
     });
   }
@@ -30,21 +30,28 @@ class IRCClient extends Client {
     if (this.verbose) console.log("[IRC]", ...args);
   }
 
-  broadcast(msg) {
+  broadcast(message) {
+    const msg = this.fromatMessageForForward(message);
     for (const chan of this.channels) {
+      // do not send in the channel the message is comming from
       if (chan != msg.channel) {
-        // do not send in the channel the message
-        try {
-          this.sendTextInChannel(msg.text, chan);
-        } catch (error) {
-          this.log("when tryin to send message in ", chan, " got ", error);
-        }
+        this.sendTextInChannel(msg.text, chan);
       }
     }
   }
 
+  fromatMessageForForward(msg) {
+    const res_msg = { ...msg };
+    res_msg.text = "[" + msg.author + "]: " + msg.text;
+    return res_msg;
+  }
+
   sendTextInChannel(text, chan) {
-    this.channel(chan).say(text);
+    try {
+      this.channel(chan).say(text);
+    } catch (error) {
+      this.log("when tryin to send message in ", chan, " got ", error);
+    }
   }
 
   start() {

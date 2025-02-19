@@ -36,12 +36,19 @@ class DiscordClient extends Client {
     if (this.verbose) console.log("[Discord]", ...args);
   }
 
-  broadcast(msg) {
+  broadcast(message) {
+    const msg = this.fromatMessageForForward(message);
     for (const chan of this.trackedChannels) {
       if (chan != msg.channel) { // do not send in the channel the message is comming from
         this.sendTextInChannel(msg.text, chan);
       }
     }
+  }
+
+  fromatMessageForForward(msg) {
+    const res_msg = { ...msg };
+    res_msg.text = "[**" + msg.author + "**]: " + msg.text;
+    return res_msg;
   }
 
   sendTextInChannel(text, chan) {
