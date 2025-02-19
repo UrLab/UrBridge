@@ -9,7 +9,7 @@ class IRCClient extends Client {
     this.verbose = verbose;
 
     this.on("message", (msg) => {
-      //this.log("message recived", msg);
+      this.log("message recived", msg);
 
       if (msg.from_server) return;
       if (!msg.target) return;
@@ -17,14 +17,11 @@ class IRCClient extends Client {
       msg.target = msg.target.toLowerCase();
 
       // catch self messages
-      if (msg.nick == this.user.nick) {
-        return;
-      }
-
-      this.log("Message is okay");
+      if (msg.nick == this.user.nick) return;
 
       const internal_msg = new Message();
       internal_msg.fromIRCFormat(msg);
+      
       this.bridge.broadcast(internal_msg);
     });
   }
@@ -35,7 +32,8 @@ class IRCClient extends Client {
 
   broadcast(msg) {
     for (const chan of this.channels) {
-      if (chan != msg.channel) { // do not send in the channel the message
+      if (chan != msg.channel) {
+        // do not send in the channel the message
         try {
           this.sendTextInChannel(msg.text, chan);
         } catch (error) {

@@ -19,10 +19,12 @@ class DiscordClient extends Client {
     this.trackedChannels = channels;
 
     this.on("messageCreate", (msg) => {
-      //this.log("message recived", msg);
+      this.log("message recived", msg);
 
       // catch self messages
       if (msg.author.id == this.user.id) return;
+      // only propagate messages from tracked channels
+      if (!this.trackedChannels.includes(msg.channelId)) return;
 
       const internal_msg = new Message();
       internal_msg.fromDiscordFormat(msg);
@@ -36,7 +38,7 @@ class DiscordClient extends Client {
 
   broadcast(msg) {
     for (const chan of this.trackedChannels) {
-      if (chan != msg.channel) { // do not send in the channel the message
+      if (chan != msg.channel) { // do not send in the channel the message is comming from
         this.sendTextInChannel(msg.text, chan);
       }
     }
