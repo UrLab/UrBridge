@@ -50,5 +50,6 @@ il faut potentiellement stop le service précédent et le reload une fois recré
 
 ### to do
 
-- diférencier le format entre irc et discord (pour avoir le gras dans le nom coté discord)
 - ajouter les /command du lechebot pour avoir l'auto completion de discord
+- utiliser des web hook pour poster des messages avec le nom et pp de l'utilisateur sur discord
+- permetre de lier le compte discord au compte irc
