@@ -6,8 +6,9 @@ export class Message{
         this.source_type; // irc/discord...
     }
 
-    fromDiscordFormat(discord_message){
-        this.text = discord_message.content
+    async fromDiscordFormat(discord_message, discordClient){
+        this.text = await this.escapeDiscordPing(discord_message.content, discordClient)
+        console.log("escaped text", this.text);
         this.channel = discord_message.channelId
         this.author = discord_message.author.username
         this.source_type = "discord"
@@ -19,4 +20,36 @@ export class Message{
         this.author = irc_message.nick,
         this.source_type = "irc" 
     }
+
+    async escapeDiscordPing(text, client) {
+        let res_text = text;
+        if (text.includes("<@")) {
+          const regex = /<@(\d+)>/g;
+    
+          const matches = [...text.matchAll(regex)];
+    
+          const userReplacements = [];
+    
+          for (let i = 0; i < matches.length; i++) {
+            const match = matches[i];
+            const userId = match[1];
+            try {
+              const user = await client.users.fetch(userId);
+              userReplacements.push({ match, username: user.username });
+            } catch (error) {
+              console.error("Error fetching user:", error);
+              userReplacements.push({ match, username: null });
+            }
+          }
+    
+          for (let i = 0; i < userReplacements.length; i++) {
+            const { match, username } = userReplacements[i];
+    
+            const replacement = username ? `@${username}` : match[0];
+            res_text = res_text.replace(match[0], replacement);
+          }
+    
+          return res_text;
+        }
+      }
 }
