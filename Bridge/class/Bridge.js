@@ -33,7 +33,7 @@ class Bridge {
     });
   }
 
-  broadcast(msg) {
+  async broadcast(msg) {
     this.log("Broadcasting", msg);
 
     for (const client of this.clients) {
