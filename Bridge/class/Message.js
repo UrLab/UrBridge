@@ -10,7 +10,7 @@ export class Message{
         this.text = await this.escapeDiscordPing(discord_message.content, discordClient)
         console.log("escaped text", this.text);
         this.channel = discord_message.channelId
-        this.author = discord_message.author.username
+        this.author = discord_message.author.displayName;
         this.source_type = "discord"
     }
 
