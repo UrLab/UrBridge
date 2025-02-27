@@ -41,15 +41,14 @@ export class Message{
               userReplacements.push({ match, username: null });
             }
           }
-    
+
           for (let i = 0; i < userReplacements.length; i++) {
             const { match, username } = userReplacements[i];
     
             const replacement = username ? `@${username}` : match[0];
             res_text = res_text.replace(match[0], replacement);
           }
-    
-          return res_text;
         }
+        return text;
       }
 }

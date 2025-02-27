@@ -41,11 +41,11 @@ podman create --name urlab_viaduk --rm --env-file .env urbridge:latest
 puis créer le service:
 
 ```bash
-generate systemd --name urlab_viaduk > /etc/systemd/system/urlab_viaduk.service
+podman generate systemd --name urlab_viaduk > /etc/systemd/system/urlab_viaduk.service
 systemctl start urlab_viaduk
 ```
 
-il faut potentiellement stop le service précédent et le reload une fois recréé
+il faut potentiellement stop le service précédent et faire un `systemctl daemon-reload` une fois recréé
 
 
 ### to do
