@@ -49,6 +49,6 @@ export class Message{
             res_text = res_text.replace(match[0], replacement);
           }
         }
-        return text;
+        return res_text;
       }
 }
