@@ -19,7 +19,6 @@ class DiscordClient extends Client {
         this.trackedChannelsIds = channels;
         this.trackedChannels = new Map();
         this.channelsGuilds = new Map();
-        this.guildsMembers = new Map();
 
         this.on("messageCreate", (msg) => {
             this.log("message recived", msg);
