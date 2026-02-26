@@ -2,7 +2,7 @@ const { Client } = require("discord.js");
 const { Message } = require("../../Bridge/class/Message");
 
 class DiscordClient extends Client {
-    constructor(bridge, verbose = false, channels) {
+    constructor(bridge, verbose = false, channels, appId) {
         super({
             intents: [
                 "Guilds",
@@ -14,6 +14,7 @@ class DiscordClient extends Client {
             ],
         });
 
+        this.appId = appId;
         this.bridge = bridge;
         this.verbose = verbose;
         this.trackedChannelsIds = channels;
@@ -40,6 +41,7 @@ class DiscordClient extends Client {
     }
 
     async broadcast(message) {
+        this.log("broadcasting to discord");
         const msg = await this.formatMessageForForward(message);
 
         const mentioned_users = this.getMentionedUsers(message.text);
@@ -203,13 +205,52 @@ class DiscordClient extends Client {
 
     async refreshMembersCache() {
         for (const [channel, guild] of this.channelsGuilds) {
-            guild.members.fetch().then((members) => {
-                this.log("members cache loaded for ", guild.name);
+            guild.members
+                .fetch()
+                .then((members) => {
+                    this.log("members cache loaded for ", guild.name);
+                })
+                .catch((err) => this.log(err));
+        }
+    }
+
+    async syncCommands() {
+        const url = `https://discord.com/api/v10/applications/${this.appId}/guilds/1335942797726846986/commands`;
+
+        // Command JSON payload for the "High Five" command (type 2 = USER command)
+        const command = {
+            name: "trump",
+            type: 1,
+            description: "uwu user documentation",
+        };
+
+        const headers = {
+            Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+            "Content-Type": "application/json",
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(command),
             });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Error registering command: ${response.statusText}`,
+                );
+            }
+
+            const data = await response.json();
+            console.log("Command registered successfully:", data);
+        } catch (error) {
+            console.error("Error:", error);
         }
     }
 
     start() {
+        this.syncCommands();
         return new Promise(async (resolve, reject) => {
             try {
                 await this.login(process.env.DISCORD_TOKEN);
