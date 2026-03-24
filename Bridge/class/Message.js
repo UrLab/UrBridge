@@ -14,15 +14,15 @@ export class Message {
         this.text += discord_message.attachments.map((a) => a.url).join("\n");
         console.log("escaped text", this.text);
         this.channel = discord_message.channelId;
-        this.author = discord_message.author.displayName;
+        this.author = discord_message.author.username; // using user name here so users in irc can use that info to cross ping
         this.source_type = "discord";
     }
 
     fromIRCFormat(irc_message) {
-        (this.text = irc_message.message),
+        ((this.text = irc_message.message),
             (this.channel = irc_message.target.toLowerCase()),
             (this.author = irc_message.nick),
-            (this.source_type = "irc");
+            (this.source_type = "irc"));
     }
 
     async escapeDiscordPing(text, client) {

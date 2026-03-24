@@ -1,6 +1,6 @@
 {
-    "verbose": true,
-    "discordChannels": ["1335942797726846989", "1335962777063264326"],
-    "ircChannels": ["#vincentdev"],
+    "verbose": false,
+    "discordChannels": ["1161739009614151751", "727212463988146206"],
+    "ircChannels": ["#urlab"],
     "discordAppId": "866317638337953792"
 }
