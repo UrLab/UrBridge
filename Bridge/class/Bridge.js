@@ -22,7 +22,7 @@ class Bridge {
                 discordChannels,
                 process.env.DISCORD_APP_ID,
             ),
-            //new IRCClient(this, verbose, ircChannels),
+            new IRCClient(this, verbose, ircChannels),
             new MatrixClient(
                 this,
                 verbose,
