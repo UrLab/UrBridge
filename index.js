@@ -1,5 +1,4 @@
-const Bridge = require("./Bridge")
-const config = require("./config.json")
-const bridge = new Bridge(config)
+const Bridge = require("./Bridge");
+const bridge = new Bridge();
 
-bridge.start()
+bridge.start();

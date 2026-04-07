@@ -2,8 +2,12 @@ FROM node
 
 WORKDIR /urbridge
 
-COPY package.json .
-RUN npm install
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml* ./
+
+RUN pnpm install
+
 COPY . .
 
 CMD ["node", "index.js"]

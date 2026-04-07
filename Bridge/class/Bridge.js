@@ -1,14 +1,14 @@
 const DiscordClient = require("../../DiscordBot");
 const IRCClient = require("../../IRCBot");
+const MatrixClient = require("../../MatrixBot");
 
 class Bridge {
-    constructor(config) {
-        const verbose = config.verbose ?? false;
+    constructor() {
+        const verbose = process.env.VERBOSE == "true" ? true : false;
 
-        const discordChannels = config.discordChannels;
-        const ircChannels = config.ircChannels.map((chan) =>
-            chan.toLowerCase(),
-        );
+        const discordChannels = process.env.DISCORD_CHANNELS.split(",");
+        const ircChannels = process.env.IRC_CHANNELS.split(",");
+        const matrixChannels = process.env.MATRIX_CHANNELS.split(",");
 
         if (!discordChannels || !ircChannels) {
             this.log("Missing channels");
@@ -20,9 +20,15 @@ class Bridge {
                 this,
                 verbose,
                 discordChannels,
-                config.discordAppId,
+                process.env.DISCORD_APP_ID,
             ),
-            new IRCClient(this, verbose, ircChannels),
+            //new IRCClient(this, verbose, ircChannels),
+            new MatrixClient(
+                this,
+                verbose,
+                process.env.MATRIX_SERVER,
+                matrixChannels,
+            ),
         ];
     }
 

@@ -25,6 +25,13 @@ export class Message {
             (this.source_type = "irc"));
     }
 
+    fromMatrixFormat(matrix_message, channel) {
+        this.text = matrix_message.event.content.body;
+        this.channel = matrix_message.event.room_id;
+        this.author = matrix_message.getSender();
+        this.source_type = "matrix";
+    }
+
     async escapeDiscordPing(text, client) {
         let res_text = text;
 

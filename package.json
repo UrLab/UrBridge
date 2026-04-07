@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.14.1",
-    "irc-framework": "^4.13.1"
+    "irc-framework": "^4.13.1",
+    "matrix-js-sdk": "^41.2.0"
   }
 }

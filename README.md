@@ -48,6 +48,27 @@ systemctl start urlab_viaduk
 il faut potentiellement stop le service précédent et faire un `systemctl daemon-reload` une fois recréé
 
 
+### Matrix
+
+pour regénérer un token:
+```bash
+curl -X POST "https://matrix.urlab.be/_matrix/client/v3/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "m.login.password",
+    "identifier": {
+      "type": "m.id.user",
+      "user": "urbridge"
+    },
+    "password": "password"
+  }'
+```
+puis mettre le token dans .env
+
+si vous avez pas le password niquez vous
+
+
+
 ### to do
 
 - ajouter les /command du lechebot pour avoir l'auto completion de discord
