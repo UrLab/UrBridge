@@ -27,26 +27,9 @@ il faut un fichier .env spécifiant les variables suivantes:
 
 ### sur le vps
 
-pour déployer sur le vps, on utilise podman à la place de docker
-
-il faut donc remplacer docker par podman pour build l'image
-
-le lancement est chelou, pour l'instant on le fait en passant par un service systemd:
-
-d'abord créer le container
 ```bash
-podman create --name urlab_viaduk --rm --env-file .env urbridge:latest
+podman run --network host -d --name urlab_viaduk --rm --env-file .env urbridge:latest
 ```
-
-puis créer le service:
-
-```bash
-podman generate systemd --name urlab_viaduk > /etc/systemd/system/urlab_viaduk.service
-systemctl start urlab_viaduk
-```
-
-il faut potentiellement stop le service précédent et faire un `systemctl daemon-reload` une fois recréé
-
 
 ### Matrix
 
