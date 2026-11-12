@@ -18,17 +18,13 @@ run un container temporaire (pour l'instant le bot ne sauve aucune data, donc il
 podman run --name urlab_viaduk --rm --env-file .env urbridge:latest
 ```
 
-il faut un fichier .env spécifiant les variables suivantes:
-
-- DISCORD_TOKEN,
-- IRC_HOST, l'adresse du serveur irc
-- IRC_PORT, le port
-- NICKNAME, le nom du bridge sur irc
+il faut un fichier .env spécifiant un certain nombre variables (tokens, username ...) voir le fichier env_template
 
 ### sur le vps
 
+si la doc (https://docs.podman.io/en/latest/markdown/podman-run.1.html) ne ment pas, --restart=unless-stopped restart le container, même après un reboot, la seule exception est quand l'utilisateur lui même stop le container manuelement
 ```bash
-podman run --network host -d --name urlab_viaduk --rm --env-file .env urbridge:latest
+podman run --restart=unless-stopped --network host -d --name urlab_viaduk --env-file .env urbridge:latest
 ```
 
 ### Matrix
